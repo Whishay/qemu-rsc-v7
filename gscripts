@@ -1,0 +1,186 @@
+define rscon 
+    p virtio_net_rsc_bypass=0
+end
+
+define rscoff
+    p virtio_net_rsc_bypass=1
+end
+
+define winvs-install
+    r -name Win-VS2013-install -enable-kvm -m 2G -smp 2 -nodefconfig -nodefaults -chardev socket,id=charmonitor,path=/tmp/Win2012-VS,server,nowait -mon chardev=charmonitor,id=monitor,mode=control -rtc base=localtime,driftfix=slew -boot order=cd,menu=on -device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 /bak/home/VMs/image/win-vm-vs2013.qcow2 -cdrom /bak/home/VMs/iso/en_windows_7_ultimate_with_sp1_x64_dvd_u_677332.iso -netdev tap,script=/etc/qemu-ifup,downscript=no,id=hostnet0 -device e1000,netdev=hostnet0,id=net0,mac=00:52:73:1f:f7:01,bus=pci.0,addr=0x3 -chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=isa_serial0 -device usb-tablet,id=input0 -vnc 0.0.0.0:1 -vga cirrus -netdev tap,script=/etc/qemu-ifup-private,downscript=no,id=hostnet1 -device virtio-net-pci,netdev=hostnet1,bus=pci.0,id=net1,mac=00:52:39:69:11:11 -monitor stdio
+end
+
+define winvs
+    r -name Win-VS2013 -enable-kvm -m 2G -smp 2 -nodefconfig -nodefaults -chardev socket,id=charmonitor,path=/tmp/Win2012-VS,server,nowait -mon chardev=charmonitor,id=monitor,mode=control -rtc base=localtime,driftfix=slew -boot order=cd,menu=on -device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 /bak/home/VMs/image/win-vm-vs2013.qcow2 -cdrom /bak/home/VMs/iso/vs2013.4_ce_enu.iso -netdev tap,script=/etc/qemu-ifup,downscript=no,id=hostnet0 -device e1000,netdev=hostnet0,id=net0,mac=00:52:73:1f:f7:01,bus=pci.0,addr=0x3 -chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=isa_serial0 -device usb-tablet,id=input0 -vnc 0.0.0.0:1 -vga cirrus -netdev tap,script=/etc/qemu-ifup-private,downscript=no,id=hostnet1 -device virtio-net-pci,netdev=hostnet1,bus=pci.0,id=net1,mac=00:52:39:69:12:11 -monitor stdio
+end
+
+define controller 
+    r -name Controller -enable-kvm -m 1G -smp 2 -uuid 7efab9a2-2a56-42d3-a548-04a7df597241 -nodefconfig -nodefaults -chardev socket,id=charmonitor,path=/tmp/Controller,server,nowait -mon chardev=charmonitor,id=monitor,mode=control -rtc base=localtime,driftfix=slew -device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 /sda/VMs/win-controller.qcow2 -netdev tap,script=/etc/qemu-ifup,downscript=no,id=hostnet0 -device e1000,netdev=hostnet0,id=net0,mac=00:52:73:1f:3a:01,bus=pci.0,addr=0x3 -chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=isa_serial0 -device usb-tablet,id=input0 -vnc 0.0.0.0:3 -vga cirrus -monitor stdio
+end
+
+define winvm1-rsc-off
+    r -name Win-VM1 -enable-kvm -m 1G -smp 2 \
+-uuid efa0f3a7-fd81-40b6-8af7-80d78b1dd127 \
+-nodefconfig -nodefaults \
+-chardev socket,id=charmonitor,path=/tmp/Win2012-VM1,server,nowait \
+-mon chardev=charmonitor,id=monitor,mode=control \
+-rtc base=localtime,driftfix=slew \
+-boot order=cd,menu=on \
+-device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 \
+/sdc/VMs/win-vm1-efa0f3a7-fd81-40b6-8af7-80d78b1dd127.qcow2 \
+-cdrom /sda/VMs/iso/en_windows_server_2012_x64_dvd_915478.iso \
+-netdev tap,script=/etc/qemu-ifup,downscript=no,id=hostnet0 \
+-device e1000,netdev=hostnet0,id=net0,mac=00:52:73:1f:f7:01,bus=pci.0,addr=0x3 \
+-chardev pty,id=charserial0 \
+-device isa-serial,chardev=charserial0,id=isa_serial0 \
+-device usb-tablet,id=input0 \
+-vnc 0.0.0.0:1 -vga cirrus \
+-netdev tap,script=/etc/qemu-ifup-private,downscript=no,id=hostnet1 \
+-device virtio-net-pci,netdev=hostnet1,bus=pci.0,id=net1,mac=00:52:39:69:12:21 -monitor stdio
+#-serial tcp:127.0.0.1:9090 
+#-device virtio-net-pci,netdev=hostnet1,bus=pci.0,id=net1,mac=00:52:39:69:12:21 -monitor stdio
+end
+
+define winvm1-rsc-on
+    r -name Win-VM1 -enable-kvm -m 1G -smp 2 \
+-uuid efa0f3a7-fd81-40b6-8af7-80d78b1dd127 \
+-nodefconfig -nodefaults \
+-chardev socket,id=charmonitor,path=/tmp/Win2012-VM1,server,nowait \
+-mon chardev=charmonitor,id=monitor,mode=control \
+-rtc base=localtime,driftfix=slew \
+-boot order=cd,menu=on \
+-device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 \
+/sdc/VMs/win-vm1-efa0f3a7-fd81-40b6-8af7-80d78b1dd127.qcow2 \
+-cdrom /sda/VMs/iso/en_windows_server_2012_x64_dvd_915478.iso \
+-netdev tap,script=/etc/qemu-ifup,downscript=no,id=hostnet0 \
+-device e1000,netdev=hostnet0,id=net0,mac=00:52:73:1f:f7:01,bus=pci.0,addr=0x3 \
+-chardev pty,id=charserial0 \
+-device isa-serial,chardev=charserial0,id=isa_serial0 \
+-device usb-tablet,id=input0 \
+-vnc 0.0.0.0:1 -vga cirrus \
+-netdev tap,script=/etc/qemu-ifup-private,downscript=no,id=hostnet1 \
+-device virtio-net-pci,netdev=hostnet1,bus=pci.0,id=net1,mac=00:52:39:69:12:21,guest_rsc=on -monitor stdio
+#-serial tcp:127.0.0.1:9090 
+#-device virtio-net-pci,netdev=hostnet1,bus=pci.0,id=net1,mac=00:52:39:69:12:21 -monitor stdio
+end
+
+define winvm2-rsc-off
+    r -name Win2012-VM2 -enable-kvm -m 2G -smp 2 -uuid 05c55323-188e-44a3-a7a5-94d064b16c9c -nodefconfig -nodefaults \
+-chardev socket,id=charmonitor,path=/tmp/Win2013-VM2,server,nowait \
+-mon chardev=charmonitor,id=monitor,mode=control \
+-rtc base=localtime,driftfix=slew -boot order=cd,menu=on \
+-device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 \
+/sdb/VMs/win-vm2-05c55323-188e-44a3-a7a5-94d064b16c9c.qcow2 \
+-netdev tap,script=/etc/qemu-ifup,downscript=no,id=hostnet0 \
+-device e1000,netdev=hostnet0,id=net0,mac=00:52:73:1f:12:02,bus=pci.0,addr=0x3 \
+-chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=isa_serial0 \
+-device usb-tablet,id=input0 -vnc 0.0.0.0:2 -vga cirrus \
+-netdev tap,script=/etc/qemu-ifup-private,downscript=no,id=hostnet1 \
+-device virtio-net-pci,netdev=hostnet1,bus=pci.0,id=net1,mac=00:52:39:69:12:02 \
+-monitor stdio \
+-cdrom /sda/VMs/iso/virtio-win-0.1.110.iso
+#-cdrom /sda/VMs/iso/en_windows_server_2012_x64_dvd_915478.iso
+end
+
+define winvm2-rsc-on
+    r -name Win2012-VM2 -enable-kvm -m 2G -smp 2 -uuid 05c55323-188e-44a3-a7a5-94d064b16c9c -nodefconfig -nodefaults \
+-chardev socket,id=charmonitor,path=/tmp/Win2013-VM2,server,nowait \
+-mon chardev=charmonitor,id=monitor,mode=control \
+-rtc base=localtime,driftfix=slew -boot order=cd,menu=on \
+-device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 \
+/sdb/VMs/win-vm2-05c55323-188e-44a3-a7a5-94d064b16c9c.qcow2 \
+-netdev tap,script=/etc/qemu-ifup,downscript=no,id=hostnet0 \
+-device e1000,netdev=hostnet0,id=net0,mac=00:52:73:1f:12:02,bus=pci.0,addr=0x3 \
+-chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=isa_serial0 \
+-device usb-tablet,id=input0 -vnc 0.0.0.0:2 -vga cirrus \
+-netdev tap,script=/etc/qemu-ifup-private,downscript=no,id=hostnet1 \
+-device virtio-net-pci,netdev=hostnet1,bus=pci.0,id=net1,mac=00:52:39:69:12:02,guest_rsc=on \
+-monitor stdio \
+-cdrom /sda/VMs/iso/virtio-win-0.1.110.iso
+#-cdrom /sda/VMs/iso/en_windows_server_2012_x64_dvd_915478.iso
+end
+
+define winvm2-d9b297ac-cdb8-4523-bcf9-1510fb7190e9-rsc-off
+    r -name Win2012-VM2 -enable-kvm -m 2G -smp 2 -uuid d9b297ac-cdb8-4523-bcf9-1510fb7190e9 -nodefconfig -nodefaults \
+-chardev socket,id=charmonitor,path=/tmp/Win2013-VM2,server,nowait \
+-mon chardev=charmonitor,id=monitor,mode=control \
+-rtc base=localtime,driftfix=slew -boot order=cd,menu=on \
+-device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 \
+/sdb/VMs/win-vm2-d9b297ac-cdb8-4523-bcf9-1510fb7190e9.qcow2 \
+-netdev tap,script=/etc/qemu-ifup,downscript=no,id=hostnet0 \
+-device e1000,netdev=hostnet0,id=net0,mac=00:52:73:1f:12:02,bus=pci.0,addr=0x3 \
+-chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=isa_serial0 \
+-device usb-tablet,id=input0 -vnc 0.0.0.0:2 -vga cirrus \
+-netdev tap,script=/etc/qemu-ifup-private,downscript=no,id=hostnet1 \
+-device virtio-net-pci,netdev=hostnet1,bus=pci.0,id=net1,mac=00:52:39:69:12:02 \
+-monitor stdio \
+-cdrom /sda/VMs/iso/en_windows_server_2012_x64_dvd_915478.iso
+#-cdrom /sda/VMs/iso/virtio-win-0.1.110.iso
+end
+
+define winvm2-d9b297ac-cdb8-4523-bcf9-1510fb7190e9-rsc-on
+    r -name Win2012-VM2 -enable-kvm -m 2G -smp 2 -uuid d9b297ac-cdb8-4523-bcf9-1510fb7190e9 -nodefconfig -nodefaults \
+-chardev socket,id=charmonitor,path=/tmp/Win2013-VM2,server,nowait \
+-mon chardev=charmonitor,id=monitor,mode=control \
+-rtc base=localtime,driftfix=slew -boot order=cd,menu=on \
+-device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 \
+/sdb/VMs/win-vm2-d9b297ac-cdb8-4523-bcf9-1510fb7190e9.qcow2 \
+-netdev tap,script=/etc/qemu-ifup,downscript=no,id=hostnet0 \
+-device e1000,netdev=hostnet0,id=net0,mac=00:52:73:1f:12:02,bus=pci.0,addr=0x3 \
+-chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=isa_serial0 \
+-device usb-tablet,id=input0 -vnc 0.0.0.0:2 -vga cirrus \
+-netdev tap,script=/etc/qemu-ifup-private,downscript=no,id=hostnet1 \
+-device virtio-net-pci,netdev=hostnet1,bus=pci.0,id=net1,mac=00:52:39:69:12:02,guest_rsc=on \
+-monitor stdio \
+
+-cdrom /sda/VMs/iso/en_windows_server_2012_x64_dvd_915478.iso
+#-cdrom /sda/VMs/iso/virtio-win-0.1.110.iso
+end
+define vhost-user-vm1-ssh
+    r -enable-kvm -m 1024 -smp 2     -chardev socket,id=char0,path=/var/run/openvswitch/vhost-user1     -netdev type=vhost-user,id=mynet1,chardev=char0,vhostforce,queues=4     -device virtio-net-pci,netdev=mynet1,mac=52:54:00:02:d9:01,mq=on,vectors=10     -object memory-backend-file,id=mem,size=1024M,mem-path=/dev/hugepages,share=on     -numa node,memdev=mem -mem-prealloc     -net user,hostfwd=tcp::10021-:22 -net nic  -vnc 0.0.0.0:10   /home/VMs/image/fedora-22-guest1.qcow2 
+end
+
+define vhost-user-vm2-ssh
+    r -enable-kvm -m 1024 -smp 2     -chardev socket,id=char1,path=/var/run/openvswitch/vhost-user2   -netdev type=vhost-user,id=mynet2,chardev=char1,vhostforce,queues=4     -device virtio-net-pci,netdev=mynet2,mac=52:54:00:02:d9:02,mq=on,vectors=10     -object memory-backend-file,id=mem,size=1024M,mem-path=/dev/hugepages,share=on     -numa node,memdev=mem -mem-prealloc     -net user,hostfwd=tcp::10022-:22 -net nic  -vnc 0.0.0.0:11   /home/VMs/image/fedora-22-guest2.qcow2 
+end
+
+define svm1
+    r /sdb/VMs/fedora-22-guest1.qcow2 -netdev tap,id=hn0,script=/etc/qemu-ifup-wei -device virtio-net-pci,netdev=hn0,mac=52:54:00:12:34:51  -m 2G -enable-kvm  -vnc 0.0.0.0:4 -monitor stdio -smp 1  -serial tcp:0.0.0.0:3333,server,nowait,nodelay
+#-serial /dev/ttyS0
+#r /sdb/VMs/fedora-22-guest1.qcow2 -netdev tap,id=hn0,script=/etc/qemu-ifup-wei -device virtio-net-pci,netdev=hn0,mac=52:54:00:12:34:51  -m 2G -enable-kvm  -vnc 0.0.0.0:4 -monitor stdio -smp 1  -gdb tcp::1234 \
+#-device ide-drive,bus=ide.1,unit=0,drive=drive-ide1-1-0,id=ide1-1-0 \
+#-drive file=/sdb/VMs/qemu-tmp.qcow2,if=none,id=drive-ide1-1-0,format=qcow2,cache=none
+
+#r /sdb/VMs/fedora-22-guest1.qcow2 -netdev tap,id=hn0,script=/etc/qemu-ifup-wei -device virtio-net-pci,netdev=hn0,mac=52:54:00:12:34:51  -m 2G -enable-kvm  -vnc 0.0.0.0:4 -monitor stdio -smp 1  -gdb tcp::1234 -S
+end
+
+define svm1-8cpus
+    r /sdb/VMs/fedora-22-guest1.qcow2 -netdev tap,id=hn0,script=/etc/qemu-ifup-wei -device virtio-net-pci,netdev=hn0,mac=52:54:00:12:34:51  -m 2G -enable-kvm  -vnc 0.0.0.0:4 -monitor stdio -smp 8
+end
+
+define svm2
+    r /sdc/VMs/fedora-22-guest2.qcow2 -netdev tap,id=hn1,script=/etc/qemu-ifup-wei -device virtio-net-pci,netdev=hn1,mac=52:54:00:12:34:52  -m 2G -enable-kvm  -vnc 0.0.0.0:5 -monitor stdio -smp 1
+end
+
+define svm3
+    r /sdc/VMs/fedora-22-guest3.qcow2 -netdev tap,id=hn1,script=/etc/qemu-ifup-wei -device virtio-net-pci,netdev=hn1,mac=52:54:00:12:34:53  -m 2G -enable-kvm  -vnc 0.0.0.0:6 -monitor stdio -smp 1
+end
+
+define svm1-private
+    r /home/VMs/image/fedora-22-guest1.qcow2 -netdev tap,script=/etc/qemu-ifup-private,downscript=no,id=hn0 -device  e1000,netdev=hn0,bus=pci.0,id=net0,mac=00:52:39:69:12:11 -m 726M -enable-kvm  -vnc 0.0.0.0:4 -monitor stdio -smp 1
+end
+
+define vhost-user-vm1-1q
+    r -enable-kvm -m 1024 -smp 2     -chardev socket,id=char0,path=/var/run/openvswitch/vhost-user1     -netdev type=vhost-user,id=mynet1,chardev=char0,vhostforce -device virtio-net-pci,netdev=mynet1,mac=52:54:00:02:d9:01 -object memory-backend-file,id=mem,size=1024M,mem-path=/dev/hugepages,share=on     -numa node,memdev=mem -mem-prealloc     -vnc 0.0.0.0:10   /home/VMs/image/fedora-22-guest1.qcow2 
+end
+
+define vhost-user-vm2-1q
+    r -enable-kvm -m 1024 -smp 2     -chardev socket,id=char1,path=/var/run/openvswitch/vhost-user2   -netdev type=vhost-user,id=mynet2,chardev=char1,vhostforce -device virtio-net-pci,netdev=mynet2,mac=52:54:00:02:d9:02 -object memory-backend-file,id=mem,size=1024M,mem-path=/dev/hugepages,share=on     -numa node,memdev=mem -mem-prealloc     -vnc 0.0.0.0:11   /home/VMs/image/fedora-22-guest2.qcow2 
+end
+define vhost-user-vm1-4q
+    r -enable-kvm -m 1024 -smp 2     -chardev socket,id=char0,path=/var/run/openvswitch/vhost-user1     -netdev type=vhost-user,id=mynet1,chardev=char0,vhostforce,queues=4     -device virtio-net-pci,netdev=mynet1,mac=52:54:00:02:d9:01,mq=on,vectors=10     -object memory-backend-file,id=mem,size=1024M,mem-path=/dev/hugepages,share=on     -numa node,memdev=mem -mem-prealloc     -vnc 0.0.0.0:10   /home/VMs/image/fedora-22-guest1.qcow2 
+end
+
+define vhost-user-vm2-4q
+    r -enable-kvm -m 1024 -smp 2     -chardev socket,id=char1,path=/var/run/openvswitch/vhost-user2   -netdev type=vhost-user,id=mynet2,chardev=char1,vhostforce,queues=4     -device virtio-net-pci,netdev=mynet2,mac=52:54:00:02:d9:02,mq=on,vectors=10     -object memory-backend-file,id=mem,size=1024M,mem-path=/dev/hugepages,share=on     -numa node,memdev=mem -mem-prealloc     -vnc 0.0.0.0:11   /home/VMs/image/fedora-22-guest2.qcow2 
+end
